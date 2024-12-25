@@ -1,41 +1,55 @@
-#include <Wire.h>
-#include <MPU6050.h>
-#include <LiquidCrystal.h>
+const int trigPin = 2;
+const int echoPin = 10;
+const int moving = 120;
 
 
-MPU6050 mpu;
+// defines variables
+long duration;
+int distance;
 
 
 // Motor control pins
-const int ena = 3;                                     // PWM pin for motor A
-const int enb = 11;                                    // PWM pin for motor B
-const int in1 = A2;                                    // Motor A direction pin
-const int in2 = A3;                                    // Motor A direction pin
-const int in3 = A0;                                    // Motor B direction pin
-const int in4 = A1;                                    // Motor B direction pin
-const int ir_R = 13, ir_L = 12, enc_L = 0, enc_R = 1;  // Encoder and IR Sensor pin
+const int ena = 3; // PWM pin for motor A
+const int enb = 11; // PWM pin for motor B
+const int in1 = A2; // Motor A direction pin
+const int in2 = A3; // Motor A direction pin
+const int in3 = A0; // Motor B direction pin
+const int in4 = A1; // Motor B direction pin
 
 
-// rotary encoder
-int counterL = 0, iStateL, fStateL, pulseL;
-int counterR = 0, iStateR, fStateR, pulseR;
-long circ = 6.5 * 3.142, d1, d2, avg;
-float scaleFactor = 1.19;
+void setup() {
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
 
 
-// motor speed control
-int slow = 120, fast = 255, wait = 10;
+  // Set motor control pins as outputs
+  pinMode(ena, OUTPUT);
+  pinMode(enb, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
 
 
-// LCD object initialized
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+  Serial.begin(115200); // Starts the serial communication
+}
+//Function to let the motors move
+void motormoving() {
+  analogWrite(ena, moving); // Move motor A
+  analogWrite(enb, moving); // Move motor B
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+}
 
 
-// Constants
-const float DEAD_ZONE = 5.0;           // Degrees for dead zone
-const float RAMP_ANGLE = 15.0;         // Angle to determine if on ramp
-const unsigned long STOP_TIME = 4000;  // Time to stop at the top of ramp (in milliseconds)
-
-
-// Rotary encoder and IR sensor state
-bool encoderANDIRsensor = false;
+// Function to stop the motors
+void motorStop() {
+  analogWrite(ena, 0); // Stop motor A
+  analogWrite(enb, 0); // Stop motor B
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+}
