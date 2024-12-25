@@ -1,0 +1,30 @@
+void setup() {
+  iStateL = digitalRead(enc_L);//initial state of encoders (HIGH/LOW)
+  iStateR = digitalRead(enc_R);
+}
+
+
+void loop() {
+  fStateL = digitalRead(enc_L); // left encoder
+  if (fStateL != iStateL) {
+    counterL++;
+    iStateL = fStateL;
+  }
+  if (counterL % 2 == 0) {
+    pulseL = counterL / 2;
+  }
+
+
+  fStateR = digitalRead(enc_R); // right encoder
+  if (fStateR != iStateR) {
+    counterR++;
+    iStateR = fStateR;
+  }
+  if (counterR % 2 == 0) {
+    pulseR = counterR / 2;
+  }
+
+  d1 = (circ * pulseL / 20.0);
+  d2 = (circ * pulseR / 20.0);
+  avg = (((d1 + d2) / 2.0));
+}
